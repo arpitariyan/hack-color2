@@ -7,7 +7,7 @@ import threading
 import time
 import sys
 import datetime
-from base64 import b64decode,b64encode
+# Removed unused base64 imports to reduce load time and memory footprint
 from datetime import date
  
 expirydate = datetime.date(2025, 12, 30)
@@ -64,15 +64,23 @@ def hero():
     clear()
     y=1
     newperiod=period
+    # Render the banner once outside the input loop to avoid repeated expensive
+    # subprocess calls to `figlet`, which noticeably slows down execution.
     banner='figlet AMUSEBOX'
-    m=0
+    clear()
+    system(banner)
+    print("Contact me on telegram Ariyan")
+    # --- Main interaction loop ---
     i=1
     thisway=[1,2,4,6,7,8,15,14,16,17,18]
     thatway=[3,5,9,10,11,12,13,19,20]
-    numbers=[]
+    # Use a set for O(1) membership checks instead of a list, which scales
+    # linearly with the number of stored elements.
+    numbers=set()
     while(y):
         clear()
-        system(banner)
+        # Banner already printed once; keep the header area clear without
+        # re-invoking `figlet` each iteration.
         print("Contact me on telegram Ariyan")
         print("Enter ",newperiod," Parity Price :")
         current=input()
@@ -115,7 +123,7 @@ def hero():
                     print(newperiod+1,": RED")
         i=i+1
         newperiod+=1
-        numbers.append(current)
+        numbers.add(current)
         y=input("Do you want to play : Press 1 and 0 to exit \n")
         if(y==0):
             y=False
